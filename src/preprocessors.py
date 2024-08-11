@@ -79,7 +79,6 @@ class ConsecutiveWeeks(BaseEstimator, TransformerMixin):
         return self
     
     def transform(self, X):
-        
         if (X[self.variable].dt.year*100 + X[self.variable].dt.isocalendar().week).min() > self.last_date:
             X["cons_week"] = self.last_week + 1
         else:
@@ -89,27 +88,21 @@ class ConsecutiveWeeks(BaseEstimator, TransformerMixin):
     
     
 class DateAttributes(BaseEstimator, TransformerMixin):
-    def __init__(self, variable):
+    def __init__(self, variable, date_attrs):
         if not isinstance(variable, str):
             raise ValueError("variable should be a str")
+        
+        if not isinstance(date_attrs, list):
+            raise ValueError("date_attrs should be a list")
+        
         self.variable = variable
+        self.date_attrs = date_attrs
     
     def fit(self, X, y=None):
         return self
     
     def transform(self, X):
-        date_attrs = [
-            ('day', 'day'),
-            ('month', 'month'),
-            ('year', 'year'),
-            ('dayofweek', 'dayofweek'),
-            ('dayofyear', 'dayofyear'),
-            ('weekofyear', lambda x: x.isocalendar().week),
-            ('quarter', 'quarter'),
-            ('is_quarter_end', 'is_quarter_end')
-        ]
-        
-        for attr_name, attr_func in date_attrs:
+        for attr_name, attr_func in self.date_attrs:
             X[attr_name] = getattr(X[self.variable].dt, attr_func) if isinstance(attr_func, str) else attr_func(X[self.variable].dt)
         
         X['total_holidays_month'] = X.groupby(['year', 'month'])['holiday'].transform('sum')
@@ -254,7 +247,7 @@ class RowsFilter(BaseEstimator, TransformerMixin):
         return X
     
     
-class ColsFilter(BaseEstimator, TransformerMixin):
+class ColsDropper(BaseEstimator, TransformerMixin):
     def __init__(self, variables):
         if not isinstance(variables, list):
             raise ValueError("variable should be a list")
