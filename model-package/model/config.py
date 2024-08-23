@@ -1,8 +1,6 @@
 from pathlib import Path
 
-pd.set_option('display.max_columns', None)
-
-ROOT = Path("../")
+DATA_PATH = Path("data")
 SEED = 42
 FOLDS = 10
 K = 3
@@ -36,7 +34,8 @@ CYCLIC_MAPPING = {
     "quarter": 4,
 }
 
-HOLIDAYS_VAR = "holiday"
+HOLIDAY_VAR = "holiday"
+HOLIDAY_NAME_VAR = "holiday_name"
 WAREHOUSE_VAR = "warehouse"
 
 FILTER_COLS = [
@@ -58,6 +57,12 @@ DROP_COLS = [
     'shutdown',
     "id",
     "date",
-    "holiday",
+    "holiday_name",
     "warehouse",
+    "month",
+    "dayofyear",
+    "day",
+    "weekofyear",
+    "dayofweek",
+    "quarter",
 ]

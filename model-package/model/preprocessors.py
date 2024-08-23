@@ -82,7 +82,7 @@ class ConsecutiveWeeks(BaseEstimator, TransformerMixin):
         if (X[self.variable].dt.year*100 + X[self.variable].dt.isocalendar().week).min() > self.last_date:
             X["cons_week"] = self.last_week + 1
         else:
-            X["cons_week"] = (X["date"].dt.year*100 + X["date"].dt.isocalendar().week).map(self.mapping_train_weeks)
+            X["cons_week"] = (X["date"].dt.year*100 + X["date"].dt.isocalendar().week).map(self.mapping_weeks)
             
         return X
     
@@ -161,7 +161,6 @@ class CyclicDateAttributes(BaseEstimator, TransformerMixin):
         return self
         
     def transform(self, X):
-        
         for var, t in self.mapping.items():
             X[f"{var}_sin"] = np.sin(2 * np.pi * X[var] / t)
             X[f"{var}_cos"] = np.cos(2 * np.pi * X[var] / t)
@@ -178,7 +177,8 @@ class TransformOHE(BaseEstimator, TransformerMixin):
     def fit(self, X, y=None):
         
         self.categories = list(X[self.variable].unique())
-        self.categories.remove(np.nan)
+        if np.nan in self.categories:
+            self.categories.remove(np.nan)
         
         self.ohe = OneHotEncoder(
             categories=[self.categories],
@@ -186,7 +186,9 @@ class TransformOHE(BaseEstimator, TransformerMixin):
             sparse_output=False,
             handle_unknown="ignore",
         )
-        self.hol_ohe.fit(X[[self.variable]])  
+        self.ohe.fit(X[[self.variable]])
+        
+        return self  
         
     def transform(self, X):
         ohe_encoded = pd.DataFrame(

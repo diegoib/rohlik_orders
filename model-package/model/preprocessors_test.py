@@ -1,7 +1,7 @@
 import pandas as pd
 from sklearn.pipeline import Pipeline
 
-from .preprocessors import (
+from preprocessors import (
     ClusterGrouper,
     ConsecutiveDays,
     ConsecutiveWeeks,
@@ -15,8 +15,9 @@ from .preprocessors import (
     ColsDropper,
 )
 
-from .config import (
-    HOLIDAYS_VAR,
+from config import (
+    HOLIDAY_VAR,
+    HOLIDAY_NAME_VAR,
     WAREHOUSE_VAR,
     DATE_VAR,
     CLUSTER_VARS,
@@ -27,11 +28,11 @@ from .config import (
     SEED,
     K,
     SKIP_HUNGARY,
-    ROOT,
+    DATA_PATH,
 )
 
 data = pd.read_csv(
-    ROOT / "train.csv",
+    DATA_PATH / "train.csv",
     parse_dates=[DATE_VAR],
 )
 
@@ -42,17 +43,22 @@ pipe = Pipeline([
     ("DateAttributes", DateAttributes(DATE_VAR, DATE_ATTRS)),
     ("CyclicDateAttributes", CyclicDateAttributes(CYCLIC_MAPPING)),
     ("ShoppingIntensity", ShoppingIntensity()),
-    ("ProximityHolidays", ProximityHolidays(HOLIDAYS_VAR)),
+    ("ProximityHolidays", ProximityHolidays(HOLIDAY_VAR)),
     ("City2Country", City2Country(WAREHOUSE_VAR, SKIP_HUNGARY)),
-    ("TransformOHE", TransformOHE(HOLIDAYS_VAR)),
-    ("TransformOHE", TransformOHE(WAREHOUSE_VAR)),
+    ("TransformOHE_Holiday", TransformOHE(HOLIDAY_NAME_VAR)),
+    ("TransformOHE_Warehouse", TransformOHE(WAREHOUSE_VAR)),
     ("RowsFilter", RowsFilter(FILTER_COLS)),
-    ("ColsDropper", ColsDropper(DROP_COLS))   
+    ("ColsDropper", ColsDropper(DROP_COLS)),   
 ])
 
 df_train = pipe.fit_transform(data)
 
 print(df_train.head(10))
-print(df_train.info())
+print(df_train.shape)
+print(list(df_train.columns))
+
+
+nulls = (df_train.isnull()).sum()
+print(nulls[nulls > 0])
 
 
