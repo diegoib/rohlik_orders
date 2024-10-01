@@ -22,7 +22,7 @@ class AppConfig(BaseModel):
     pipeline_save_file: str
 
 
-class ModelConfing(BaseModel):
+class ModelConfig(BaseModel):
     """
     All configuration relevant to model
     trainig and feature engineering.
