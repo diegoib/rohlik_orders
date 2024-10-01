@@ -88,7 +88,7 @@ class ConsecutiveWeeks(BaseEstimator, TransformerMixin):
     
     
 class DateAttributes(BaseEstimator, TransformerMixin):
-    def __init__(self, variable, date_attrs):
+    def __init__(self, variable, date_attrs, week_attr):
         if not isinstance(variable, str):
             raise ValueError("variable should be a str")
         
@@ -97,14 +97,18 @@ class DateAttributes(BaseEstimator, TransformerMixin):
         
         self.variable = variable
         self.date_attrs = date_attrs
+        self.week_attr = week_attr
     
     def fit(self, X, y=None):
         return self
     
     def transform(self, X):
         for attr_name, attr_func in self.date_attrs:
-            X[attr_name] = getattr(X[self.variable].dt, attr_func) if isinstance(attr_func, str) else attr_func(X[self.variable].dt)
+            X[attr_name] = getattr(X[self.variable].dt, attr_func)
         
+        if self.week_attr:
+            X["weekofyear"] = X[self.variable].dt.isocalendar().week
+            
         X['total_holidays_month'] = X.groupby(['year', 'month'])['holiday'].transform('sum')
         
         return X

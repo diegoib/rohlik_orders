@@ -1,0 +1,62 @@
+seed: 42
+folds: 10
+k: 3
+skip_hungary: True
+
+cluster_vars:
+  - holiday 
+  - school_holidays 
+  - winter_school_holidays
+
+date_var: date
+
+date_attrs:
+  - day
+  - month
+  - year
+  - dayofweek
+  - dayofyear
+  - quarter
+  - is_quarter_end
+
+week_attr: True
+
+cyclic_mapping: 
+  month: 12
+  dayofyear: 365
+  day: 31
+  weekofyear: 52
+  dayofweek: 7
+  quarter: 4
+
+
+holiday_var: holiday
+holiday_name_var: holiday_name
+warehouse_var: warehouse
+
+filter_cols:
+  - mini_shutdown
+  - blackout
+  - frankfurt_shutdown
+  - shutdown
+
+drop_cols: 
+  - snow 
+  - mini_shutdown 
+  - user_activity_2 
+  - user_activity_1 
+  - mov_change 
+  - blackout 
+  - precipitation 
+  - frankfurt_shutdown
+  - shutdown
+  - id
+  - date
+  - holiday_name
+  - warehouse
+  - month
+  - dayofyear
+  - day
+  - weekofyear
+  - dayofweek
+  - quarter

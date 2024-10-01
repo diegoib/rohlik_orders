@@ -15,7 +15,7 @@ from preprocessors import (
     ColsDropper,
 )
 
-from config import (
+from _config import (
     HOLIDAY_VAR,
     HOLIDAY_NAME_VAR,
     WAREHOUSE_VAR,
