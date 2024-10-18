@@ -1,0 +1,4 @@
+- Al pipeline tengo que añadirle el modelo al final:
+    - hacer una clase que implemente el cv y guarde los modelos en fit, y en predict los utilice
+    - los inputs deben ser el tipo de modelo, params
+    - los params puede venir del config

@@ -1,6 +1,7 @@
+from typing import List, Dict
+
 import numpy as np
 import pandas as pd
-
 from sklearn.base import BaseEstimator, TransformerMixin
 
 from sklearn.cluster import KMeans
@@ -8,7 +9,7 @@ from sklearn.preprocessing import OneHotEncoder
 
 
 class ClusterGrouper(BaseEstimator, TransformerMixin):
-    def __init__(self, variables, k, seed):
+    def __init__(self, variables: List[str], k:int, seed:int):
         
         if not isinstance(variables, list):
             raise ValueError("variables should be a list")
@@ -18,24 +19,24 @@ class ClusterGrouper(BaseEstimator, TransformerMixin):
         self.variables = variables
         self.kmeans = KMeans(n_clusters=self.k, random_state=self.seed)
         
-    def fit(self, X, y=None):
+    def fit(self, X:pd.DataFrame, y=None):
         self.kmeans.fit(X[self.variables])
         return self
     
-    def transform(self, X):
+    def transform(self, X) -> pd.DataFrame:
         X["cluster"] = self.kmeans.predict(X[self.variables])
         return X
     
 
 class ConsecutiveDays(BaseEstimator, TransformerMixin):
-    def __init__(self, variable):
+    def __init__(self, variable: str):
         
         if not isinstance(variable, str):
             raise ValueError("variable should be a str")
         
         self.variable = variable
         
-    def fit(self, X, y=None):
+    def fit(self, X:pd.DataFrame, y=None):
         self.mapping_days = {
             d: i for i, d in enumerate(pd.date_range(
                 start=X[self.variable].min(),
@@ -48,7 +49,7 @@ class ConsecutiveDays(BaseEstimator, TransformerMixin):
         
         return self
         
-    def transform(self, X):
+    def transform(self, X:pd.DataFrame) -> pd.DataFrame:
         
         if X[self.variable].min() > self.last_date:
             X["cons_day"] = self.last_day + 1
@@ -59,14 +60,14 @@ class ConsecutiveDays(BaseEstimator, TransformerMixin):
  
     
 class ConsecutiveWeeks(BaseEstimator, TransformerMixin):
-    def __init__(self, variable):
+    def __init__(self, variable: str):
 
         if not isinstance(variable, str):
             raise ValueError("variable should be a str")
         
         self.variable = variable
         
-    def fit(self, X, y=None):
+    def fit(self, X:pd.DataFrame, y=None):
         self.mapping_weeks = {
             w: i for i, w in enumerate(
                 (X[self.variable].dt.year*100 + X[self.variable].dt.isocalendar().week).unique()
@@ -77,7 +78,7 @@ class ConsecutiveWeeks(BaseEstimator, TransformerMixin):
         
         return self
     
-    def transform(self, X):
+    def transform(self, X:pd.DataFrame) -> pd.DataFrame:
         if (X[self.variable].dt.year*100 + X[self.variable].dt.isocalendar().week).min() > self.last_date:
             X["cons_week"] = self.last_week + 1
         else:
@@ -87,21 +88,24 @@ class ConsecutiveWeeks(BaseEstimator, TransformerMixin):
     
     
 class DateAttributes(BaseEstimator, TransformerMixin):
-    def __init__(self, variable, date_attrs, week_attr):
+    def __init__(self, variable: str, date_attrs: List[str], week_attr: bool):
         if not isinstance(variable, str):
             raise ValueError("variable should be a str")
         
         if not isinstance(date_attrs, list):
             raise ValueError("date_attrs should be a list")
         
+        if not isinstance(week_attr, bool):
+            raise ValueError("week_attr should be a boolean")
+        
         self.variable = variable
         self.date_attrs = date_attrs
         self.week_attr = week_attr
     
-    def fit(self, X, y=None):
+    def fit(self, X:pd.DataFrame, y=None):
         return self
     
-    def transform(self, X):
+    def transform(self, X:pd.DataFrame) -> pd.DataFrame:
         for attr_name, attr_func in self.date_attrs:
             X[attr_name] = getattr(X[self.variable].dt, attr_func)
         
@@ -114,10 +118,10 @@ class DateAttributes(BaseEstimator, TransformerMixin):
        
         
 class ShoppingIntensity(BaseEstimator, TransformerMixin):
-    def fit(self, X, y=None):
+    def fit(self, X:pd.DataFrame, y=None):
         return self
     
-    def transform(self, X):
+    def transform(self, X:pd.DataFrame) -> pd.DataFrame:
         special_days = {
             'black_friday': ((X['day'] >= 22) & (X['day'] <= 28) & (X['month'] == 11) & (X['weekofyear'] == 4)),
             'cyber_monday': ((X['day'] >= 22) & (X['day'] <= 28) & (X['month'] == 11) & (X['weekofyear'] == 0)),
@@ -154,16 +158,16 @@ class ShoppingIntensity(BaseEstimator, TransformerMixin):
     
     
 class CyclicDateAttributes(BaseEstimator, TransformerMixin):
-    def __init__(self, mapping):
+    def __init__(self, mapping: Dict[str, int]):
         if not isinstance(mapping, dict):
             raise ValueError("mapping should be a dictionary")
         
         self.mapping = mapping
         
-    def fit(self, X, y=None):
+    def fit(self, X:pd.DataFrame, y=None):
         return self
         
-    def transform(self, X):
+    def transform(self, X:pd.DataFrame) -> pd.DataFrame:
         for var, t in self.mapping.items():
             X[f"{var}_sin"] = np.sin(2 * np.pi * X[var] / t)
             X[f"{var}_cos"] = np.cos(2 * np.pi * X[var] / t)
@@ -172,12 +176,12 @@ class CyclicDateAttributes(BaseEstimator, TransformerMixin):
     
     
 class TransformOHE(BaseEstimator, TransformerMixin):
-    def __init__(self, variable):
+    def __init__(self, variable: str):
         if not isinstance(variable, str):
             raise ValueError("variable should be a str")
         self.variable = variable
         
-    def fit(self, X, y=None):
+    def fit(self, X:pd.DataFrame, y=None):
         
         self.categories = list(X[self.variable].unique())
         if np.nan in self.categories:
@@ -193,7 +197,7 @@ class TransformOHE(BaseEstimator, TransformerMixin):
         
         return self  
         
-    def transform(self, X):
+    def transform(self, X:pd.DataFrame) -> pd.DataFrame:
         ohe_encoded = pd.DataFrame(
             self.ohe.transform(X[[self.variable]]), 
             columns=self.ohe.get_feature_names_out([self.variable])
@@ -202,31 +206,34 @@ class TransformOHE(BaseEstimator, TransformerMixin):
     
 
 class ProximityHolidays(BaseEstimator, TransformerMixin):
-    def __init__(self, variable):
+    def __init__(self, variable: str):
         if not isinstance(variable, str):
             raise ValueError("variable should be a str")
         self.variable = variable
         
-    def fit(self, X, y=None):
+    def fit(self, X:pd.DataFrame, y=None):
         return self
     
-    def transform(self, X):
+    def transform(self, X:pd.DataFrame) -> pd.DataFrame:
         X[f"{self.variable}_before"] = X[self.variable].shift(1).fillna(0).astype(int)
         X[f"{self.variable}_after"] = X[self.variable].shift(-1).fillna(0).astype(int)
         return X        
     
 
 class City2Country(BaseEstimator, TransformerMixin):
-    def __init__(self, variable, skip_hungary=True):
+    def __init__(self, variable: str, skip_hungary: bool=True):
         if not isinstance(variable, str):
             raise ValueError("variable should be a str")
+        if not isinstance(skip_hungary, bool):
+            raise ValueError("skip_hungary should be a boolean")
+        
         self.variable = variable
         self.skip_hungary = skip_hungary
         
-    def fit(self, X, y=None):
+    def fit(self, X:pd.DataFrame, y=None):
         return self
     
-    def transform(self, X):
+    def transform(self, X:pd.DataFrame) -> pd.DataFrame:
         X["germany"] = np.where(X[self.variable].isin(["Munich_1", "Frankfurt_1"]), 1, 0)
         X["czech"] = np.where(X[self.variable].isin(["Brno_1", "Prague_1", "Prague_2", "Prague_3"]), 1, 0)
         if not self.skip_hungary:
@@ -236,16 +243,16 @@ class City2Country(BaseEstimator, TransformerMixin):
         
         
 class RowsFilter(BaseEstimator, TransformerMixin):
-    def __init__(self, variables):
+    def __init__(self, variables: List[str]):
         if not isinstance(variables, list):
             raise ValueError("variable should be a list")
         
         self.variables = variables
         
-    def fit(self, X, y=None):
+    def fit(self, X:pd.DataFrame, y=None):
         return self
     
-    def transform(self, X):
+    def transform(self, X:pd.DataFrame) -> pd.DataFrame:
         for v in self.variables:
             X = X[X[v] == 0]
             
@@ -253,16 +260,32 @@ class RowsFilter(BaseEstimator, TransformerMixin):
     
     
 class ColsDropper(BaseEstimator, TransformerMixin):
-    def __init__(self, variables):
+    def __init__(self, variables: List[str]):
         if not isinstance(variables, list):
             raise ValueError("variable should be a list")
         
         self.variables = variables
         
-    def fit(self, X, y=None):
+    def fit(self, X:pd.DataFrame, y=None):
         return self
     
-    def transform(self, X):
+    def transform(self, X:pd.DataFrame) -> pd.DataFrame:
+        X = X.drop(self.variables, axis=1)
+        
+        return X
+    
+    
+class ColsDropper(BaseEstimator, TransformerMixin):
+    def __init__(self, variables: List[str]):
+        if not isinstance(variables, list):
+            raise ValueError("variable should be a list")
+        
+        self.variables = variables
+        
+    def fit(self, X: pd.DataFrame, y=None):
+        return self
+    
+    def transform(self, X: pd.DataFrame) -> pd.DataFrame:
         X = X.drop(self.variables, axis=1)
         
         return X

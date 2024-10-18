@@ -1,3 +1,8 @@
+
+training_data_file: train.csv
+test_data_file: test.csv
+pipeline_save_file: fitted_pipeline_v
+
 seed: 42
 folds: 10
 k: 3
