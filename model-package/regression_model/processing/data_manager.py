@@ -5,9 +5,12 @@ import joblib
 import pandas as pd
 from sklearn.pipeline import Pipeline
 
-from model import __version__ as _version
-from model.config.core import DATASET_DIR, TRAINED_MODEL_DIR, config
+from regression_model import __version__ as _version
+from regression_model.config.core import PACKAGE_ROOT, DATASET_DIR, TRAINED_MODEL_DIR, config
 
+
+with open(PACKAGE_ROOT / "VERSION") as version_file:
+    __version__ = version_file.read().strip()
 
 def load_dataset(*, file_name: str) -> pd.DataFrame:
     return pd.read_csv(Path(f"{DATASET_DIR}/{file_name}"))

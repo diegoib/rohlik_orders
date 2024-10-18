@@ -1,13 +1,13 @@
 from pathlib import Path
-from typing import Dict, List, Sequence
+from typing import Dict, List
 
 from pydantic import BaseModel
 from strictyaml import YAML, load
 
-import model
+import regression_model
 
 # Project Directories
-PACKAGE_ROOT = Path(model.__file__).resolve().parent
+PACKAGE_ROOT = Path(regression_model.__file__).resolve().parent
 ROOT = PACKAGE_ROOT.parent
 CONFIG_FILE_PATH = PACKAGE_ROOT / "config.yml"
 DATASET_DIR = PACKAGE_ROOT / "datasets"
@@ -17,6 +17,7 @@ class AppConfig(BaseModel):
     """
     Application-level config
     """
+    package_name: str
     training_data_file: str
     test_data_file: str
     pipeline_save_file: str
@@ -46,8 +47,8 @@ class ModelConfig(BaseModel):
 class Config(BaseModel):
     """Master config object."""
 
-    app_config: AppConfig
-    model_config: ModelConfig
+    config_app: AppConfig
+    config_model: ModelConfig
     
     
 def find_config_file() -> Path:
@@ -77,8 +78,8 @@ def create_and_validate_config(parsed_config: YAML = None) -> Config:
 
     # specify the data attribute from the strictyaml YAML type.
     _config = Config(
-        app_config=AppConfig(**parsed_config.data),
-        model_config=ModelConfig(**parsed_config.data),
+        config_app=AppConfig(**parsed_config.data),
+        config_model=ModelConfig(**parsed_config.data),
     )
 
     return _config

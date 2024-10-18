@@ -1,4 +1,4 @@
-
+package_name: rohlik_orders_model
 training_data_file: train.csv
 test_data_file: test.csv
 pipeline_save_file: fitted_pipeline_v
