@@ -43,7 +43,7 @@ class ModelConfig(BaseModel):
     warehouse_var: str
     filter_cols: List[str]
     drop_cols: List[str]
-    model_params: Dict[str, Any]
+    params_model: Dict[str, Any]
  
 
 class Config(BaseModel):

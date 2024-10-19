@@ -11,7 +11,7 @@ from sklearn.metrics import mean_absolute_percentage_error
 class VotingRegressor(BaseEstimator, RegressorMixin):
     def __init__(self, params: Dict[str, Any], folds: int, group_col: str, seed: int):
         self.params = params
-        self.params.update({"seed": seed})
+        self.params.update({"random_state": seed})
         self.folds = folds
         self.group_col = group_col
         
