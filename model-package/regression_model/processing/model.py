@@ -2,15 +2,16 @@ from typing import Dict, Any
 
 import numpy as np
 import pandas as pd
-from catboost import CatBoostRegressor
+from lightgbm import LGBMRegressor, early_stopping
 from sklearn.base import BaseEstimator, RegressorMixin
 from sklearn.model_selection import GroupKFold
 from sklearn.metrics import mean_absolute_percentage_error
 
 
 class VotingRegressor(BaseEstimator, RegressorMixin):
-    def __init__(self, params: Dict[str, Any], folds: int, group_col: str):
+    def __init__(self, params: Dict[str, Any], folds: int, group_col: str, seed: int):
         self.params = params
+        self.params.update({"seed": seed})
         self.fitted_models = []
         self.scores = []
         self.folds = folds
@@ -25,10 +26,11 @@ class VotingRegressor(BaseEstimator, RegressorMixin):
             X_train, y_train = X.iloc[idx_train], y.iloc[idx_train]
             X_valid, y_valid = X.iloc[idx_valid], y.iloc[idx_valid]
             
-            model = CatBoostRegressor(**self.params)
+            model = LGBMRegressor(**self.params)
             model.fit(
                 X_train, y_train,
-                eval_set=[(X_valid, y_valid)]
+                eval_set=[(X_valid, y_valid)],
+                callbacks=[early_stopping(100)]
             )
             
             preds = model.predict(X_valid)

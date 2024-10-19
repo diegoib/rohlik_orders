@@ -65,3 +65,14 @@ drop_cols:
   - weekofyear
   - dayofweek
   - quarter
+
+
+model_params: 
+  month: 12
+  objective: regression,
+  metric: mape,
+  boosting_type: gbdt,
+  n_estimators: 6000,
+    random_state: SEED,
+  verbosity: -1,
+  n_jobs: -1,

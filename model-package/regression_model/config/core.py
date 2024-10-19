@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Dict, List
+from typing import Dict, List, Any
 
 from pydantic import BaseModel
 from strictyaml import YAML, load
@@ -42,6 +42,7 @@ class ModelConfig(BaseModel):
     warehouse_var: str
     filter_cols: List[str]
     drop_cols: List[str]
+    model_params: Dict[str, Any]
  
 
 class Config(BaseModel):
