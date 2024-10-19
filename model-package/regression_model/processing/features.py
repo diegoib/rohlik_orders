@@ -176,7 +176,7 @@ class CyclicDateAttributes(BaseEstimator, TransformerMixin):
     
     
 class TransformOHE(BaseEstimator, TransformerMixin):
-    def __init__(self, variable: str):
+    def __init__(self, mapping: str):
         if not isinstance(variable, str):
             raise ValueError("variable should be a str")
         self.variable = variable

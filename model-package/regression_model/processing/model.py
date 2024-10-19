@@ -12,13 +12,13 @@ class VotingRegressor(BaseEstimator, RegressorMixin):
     def __init__(self, params: Dict[str, Any], folds: int, group_col: str, seed: int):
         self.params = params
         self.params.update({"seed": seed})
-        self.fitted_models = []
-        self.scores = []
         self.folds = folds
         self.group_col = group_col
         
     def fit(self, X: pd.DataFrame, y: pd.Series) -> None:
         
+        self.scores = []
+        self.fitted_models = []
         cv = GroupKFold(self.folds)
         
         for idx_train, idx_valid in cv.split(X, groups=X[self.group_col]):

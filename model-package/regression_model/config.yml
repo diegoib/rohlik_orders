@@ -7,6 +7,7 @@ seed: 42
 folds: 10
 k: 3
 skip_hungary: True
+group_col: cons_week
 
 cluster_vars:
   - holiday 

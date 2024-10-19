@@ -32,6 +32,7 @@ class ModelConfig(BaseModel):
     folds: int
     k: int
     skip_hungary: bool
+    group_col: str
     cluster_vars: List[str]
     date_var: str
     date_attrs: List[str]
