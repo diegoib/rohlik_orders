@@ -9,13 +9,13 @@ from regression_model import __version__ as _version
 from regression_model.config.core import PACKAGE_ROOT, DATASET_DIR, TRAINED_MODEL_DIR, config
 
 
-with open(PACKAGE_ROOT / "VERSION") as version_file:
-    __version__ = version_file.read().strip()
-
 def load_dataset(*, file_name: str) -> pd.DataFrame:
-    return pd.read_csv(Path(f"{DATASET_DIR}/{file_name}"))
+    return pd.read_csv(
+        Path(f"{DATASET_DIR}/{file_name}"), 
+        parse_dates=[config.config_model.date_var]
+    )
     
-    
+
 def save_pipeline(*, pipeline_to_persist: Pipeline) -> None:
     """Persist the pipeline.
     Saves the versioned model, and overwrites any previous

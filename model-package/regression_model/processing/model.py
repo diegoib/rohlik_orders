@@ -1,4 +1,4 @@
-from typing import Dict, Any
+from typing import Dict, Any, Tuple, List
 
 import numpy as np
 import pandas as pd
@@ -16,7 +16,6 @@ class VotingRegressor(BaseEstimator, RegressorMixin):
         self.group_col = group_col
         
     def fit(self, X: pd.DataFrame, y: pd.Series) -> None:
-        
         self.scores = []
         self.fitted_models = []
         cv = GroupKFold(self.folds)
@@ -44,3 +43,8 @@ class VotingRegressor(BaseEstimator, RegressorMixin):
             preds += self.fitted_models[f].predict(X) / self.folds
             
         return preds
+    
+    def get_scores(self) -> Tuple[float, List[float]]:
+        mean_cv = np.mean(self.scores)
+        return mean_cv, self.scores
+        

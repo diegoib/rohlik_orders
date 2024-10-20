@@ -1,8 +1,8 @@
 package_name: rohlik_orders_model
 training_data_file: train.csv
-test_data_file: test.csv
 pipeline_save_file: fitted_pipeline_v
 
+label: orders
 seed: 42
 folds: 10
 k: 3
@@ -75,3 +75,5 @@ params_model:
   n_estimators: 6000,
   verbosity: -1,
   n_jobs: -1,
+
+score_threshold: 0.04

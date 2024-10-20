@@ -10,7 +10,7 @@ import regression_model
 PACKAGE_ROOT = Path(regression_model.__file__).resolve().parent
 ROOT = PACKAGE_ROOT.parent
 CONFIG_FILE_PATH = PACKAGE_ROOT / "config.yml"
-DATASET_DIR = PACKAGE_ROOT / "datasets"
+DATASET_DIR = ROOT / "data"
 TRAINED_MODEL_DIR = PACKAGE_ROOT / "trained_models"
 
 class AppConfig(BaseModel):
@@ -19,7 +19,6 @@ class AppConfig(BaseModel):
     """
     package_name: str
     training_data_file: str
-    test_data_file: str
     pipeline_save_file: str
 
 
@@ -28,6 +27,7 @@ class ModelConfig(BaseModel):
     All configuration relevant to model
     trainig and feature engineering.
     """
+    label: str
     seed: int
     folds: int
     k: int
@@ -44,6 +44,7 @@ class ModelConfig(BaseModel):
     filter_cols: List[str]
     drop_cols: List[str]
     params_model: Dict[str, Any]
+    score_threshold: float
  
 
 class Config(BaseModel):
