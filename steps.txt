@@ -8,3 +8,7 @@ Hecho:
 - hacer una clase que implemente el cv y guarde los modelos en fit, y en predict los utilice
 - Crear los params en el archivo config (puede ser un dict)
 - Crear validaciones inputs
+
+
+situado en rohlik_orders/model-package, ejecutar "export PYTHONPATH=$(pwd):$PYTHONPATH" y 
+    ya se pueden ejecutar desde ese wd los archivos
