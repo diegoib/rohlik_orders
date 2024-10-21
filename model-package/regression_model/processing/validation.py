@@ -3,6 +3,7 @@ from typing import List, Optional, Tuple
 import numpy as np
 import pandas as pd
 from pydantic import BaseModel, ValidationError
+from datetime import datetime
 
 
 
@@ -13,16 +14,28 @@ def validate_score(score: int, threshold: float):
     return False
 
 
+def drop_na_inputs(*, input_data: pd.DataFrame) -> pd.DataFrame:
+    """Check model inputs for na values and filter."""
+    validated_data = input_data.copy()
+    validated_data.dropna(subset=["date", "warehouse"], inplace=True)
+
+    return validated_data
+
+
 def validate_inputs(*, input_data: pd.DataFrame) -> Tuple[pd.DataFrame, Optional[dict]]:
     """Check model inputs for unprocessable values."""
-
-    # convert syntax error field names (beginning with numbers)
+    try:
+        input_data["date"] = pd.to_datetime(input_data["date"], errors='raise')
+    except ValueError as err:
+        raise ValueError(err, f"'Unable to parse date")
+    
+    validated_data = drop_na_inputs(input_data=input_data)
     errors = None
 
     try:
         # replace numpy nans so that pydantic can validate
         MultipleOrderInputs(
-            inputs=input_data.replace({np.nan: None}).to_dict(orient="records")
+            inputs=validated_data.replace({np.nan: None}).to_dict(orient="records")
         )
     except ValidationError as error:
         errors = error.json()
@@ -31,9 +44,8 @@ def validate_inputs(*, input_data: pd.DataFrame) -> Tuple[pd.DataFrame, Optional
 
 
 class OrderInputSchema(BaseModel):
-    warehouse: Optional[str]        
-    date: Optional[str]
-    orders: Optional[float]       
+    warehouse: str        
+    date: datetime
     holiday_name: Optional[str]        
     holiday: Optional[int]         
     shutdown: Optional[int]         

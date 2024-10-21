@@ -42,7 +42,7 @@ class VotingRegressor(BaseEstimator, RegressorMixin):
         for f in range(self.folds):
             preds += self.fitted_models[f].predict(X) / self.folds
             
-        return preds
+        return np.round(preds)
     
     def get_scores(self) -> Tuple[float, List[float]]:
         mean_cv = np.mean(self.scores)

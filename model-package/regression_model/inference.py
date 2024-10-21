@@ -24,7 +24,7 @@ def make_prediction(
 
     if not errors:
         predictions = _orders_pipe.predict(
-            X=validated_data[config.model_config.features]
+            X=validated_data
         )
         results = {
             "predictions": predictions,  
