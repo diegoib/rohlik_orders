@@ -200,7 +200,8 @@ class TransformOHE(BaseEstimator, TransformerMixin):
     def transform(self, X:pd.DataFrame) -> pd.DataFrame:
         ohe_encoded = pd.DataFrame(
             self.ohe.transform(X[[self.variable]]), 
-            columns=self.ohe.get_feature_names_out([self.variable])
+            columns=self.ohe.get_feature_names_out([self.variable]),
+            index=X.index,
         )
         return pd.concat([X, ohe_encoded], axis=1)     
     
@@ -274,18 +275,3 @@ class ColsDropper(BaseEstimator, TransformerMixin):
         
         return X
     
-    
-class ColsDropper(BaseEstimator, TransformerMixin):
-    def __init__(self, variables: List[str]):
-        if not isinstance(variables, list):
-            raise ValueError("variable should be a list")
-        
-        self.variables = variables
-        
-    def fit(self, X: pd.DataFrame, y=None):
-        return self
-    
-    def transform(self, X: pd.DataFrame) -> pd.DataFrame:
-        X = X.drop(self.variables, axis=1)
-        
-        return X

@@ -83,7 +83,7 @@ orders_pipe = Pipeline(
             )
         ),
         (
-            "LGBMModel",
+            "Model",
             model.VotingRegressor(
                 params=config.config_model.params_model,
                 folds=config.config_model.folds,

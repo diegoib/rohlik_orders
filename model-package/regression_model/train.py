@@ -24,8 +24,8 @@ def run_training() -> None:
     orders_pipe.fit(X_train, y_train)
 
     # persist trained model
-    cv_score, _ = orders_pipe.named_steps['model'].get_scores()    
-    validation = validate_score(cv_score, config.config_app.model_threshold)
+    cv_score, _ = orders_pipe.named_steps['Model'].get_scores()    
+    validation = validate_score(cv_score, config.config_model.score_threshold)
     
     if validation:    
         save_pipeline(pipeline_to_persist=orders_pipe)
