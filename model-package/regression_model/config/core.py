@@ -1,7 +1,7 @@
 from pathlib import Path
 from typing import Dict, List, Any
 
-from pydantic import BaseModel
+from pydantic import BaseModel, field_validator
 from strictyaml import YAML, load
 
 import regression_model
@@ -13,6 +13,7 @@ CONFIG_FILE_PATH = PACKAGE_ROOT / "config.yml"
 DATASET_DIR = ROOT / "data"
 TRAINED_MODEL_DIR = PACKAGE_ROOT / "trained_models"
 
+
 class AppConfig(BaseModel):
     """
     Application-level config
@@ -20,6 +21,15 @@ class AppConfig(BaseModel):
     package_name: str
     training_data_file: str
     pipeline_save_file: str
+
+
+class ModelParams(BaseModel):
+    objective: str
+    metric: str
+    boosting_type: str
+    n_estimators: int
+    verbosity: int
+    n_jobs: int
 
 
 class ModelConfig(BaseModel):
@@ -46,6 +56,27 @@ class ModelConfig(BaseModel):
     params_model: Dict[str, Any]
     score_threshold: float
  
+    @field_validator('params_model')
+    @classmethod
+    def validate_params_model(cls, v):
+        expected_types = {
+            'objective': str,
+            'metric': str,
+            'boosting_type': str,
+            'n_estimators': int,
+            'verbosity': int,
+            'n_jobs': int
+        }
+        
+        for key, expected_type in expected_types.items():
+            if key in v:
+                try:
+                    v[key] = expected_type(v[key])
+                except ValueError:
+                    raise ValueError(f"'{key}' debe ser de tipo {expected_type.__name__}")
+        
+        return v
+
 
 class Config(BaseModel):
     """Master config object."""

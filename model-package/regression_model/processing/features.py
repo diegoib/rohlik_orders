@@ -106,8 +106,8 @@ class DateAttributes(BaseEstimator, TransformerMixin):
         return self
     
     def transform(self, X:pd.DataFrame) -> pd.DataFrame:
-        for attr_name, attr_func in self.date_attrs:
-            X[attr_name] = getattr(X[self.variable].dt, attr_func)
+        for attr_name in self.date_attrs:
+            X[attr_name] = getattr(X[self.variable].dt, attr_name)
         
         if self.week_attr:
             X["weekofyear"] = X[self.variable].dt.isocalendar().week
