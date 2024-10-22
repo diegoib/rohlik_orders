@@ -1,13 +1,15 @@
-- crear el pipeline
-- entrenar el pipeline
-- crear validaciones del performance del modelo
-- inference
-
+- crear tests
+- configurar tox en model-package
+- crear la api
 
 Hecho:
 - hacer una clase que implemente el cv y guarde los modelos en fit, y en predict los utilice
 - Crear los params en el archivo config (puede ser un dict)
 - Crear validaciones inputs
+- crear el pipeline
+- entrenar el pipeline
+- crear validaciones del performance del modelo
+- inference
 
 
 situado en rohlik_orders/model-package, ejecutar "export PYTHONPATH=$(pwd):$PYTHONPATH" y 
