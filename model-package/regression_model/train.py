@@ -1,6 +1,5 @@
 from datetime import datetime, timedelta
 
-import numpy as np
 from config.core import config
 from pipeline import orders_pipe
 from processing.data_manager import load_dataset, save_pipeline

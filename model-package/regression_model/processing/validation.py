@@ -26,7 +26,7 @@ def validate_inputs(*, input_data: pd.DataFrame) -> Tuple[pd.DataFrame, Optional
     try:
         input_data["date"] = pd.to_datetime(input_data["date"], errors="raise")
     except ValueError as err:
-        raise ValueError(err, f"'Unable to parse date")
+        raise ValueError(err, "Unable to parse date")
 
     validated_data = drop_na_inputs(input_data=input_data)
     errors = None

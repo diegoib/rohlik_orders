@@ -1,4 +1,4 @@
-from typing import Any, Dict, List, Tuple
+from typing import Any, Dict, Tuple
 
 import numpy as np
 import pandas as pd
@@ -45,6 +45,6 @@ class VotingRegressor(BaseEstimator, RegressorMixin):
 
         return np.round(preds)
 
-    def get_scores(self) -> Tuple[float, List[float]]:
+    def get_scores(self) -> Tuple[float, np.ndarray[float]]:
         mean_cv = np.mean(self.scores)
         return mean_cv, self.scores
