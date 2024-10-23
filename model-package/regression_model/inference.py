@@ -23,11 +23,9 @@ def make_prediction(
     results = {"predictions": None, "version": _version, "errors": errors}
 
     if not errors:
-        predictions = _orders_pipe.predict(
-            X=validated_data
-        )
+        predictions = _orders_pipe.predict(X=validated_data)
         results = {
-            "predictions": predictions,  
+            "predictions": predictions,
             "version": _version,
             "errors": errors,
         }

@@ -7,9 +7,9 @@ from regression_model.processing.features import DateAttributes
 def test_date_attributes_transformer(sample_input_data):
     # Given
     transformer = DateAttributes(
-        variable=config.config_model.date_var, 
-        date_attrs= config.config_model.date_attrs,
-        week_attr=config.config_model.week_attr
+        variable=config.config_model.date_var,
+        date_attrs=config.config_model.date_attrs,
+        week_attr=config.config_model.week_attr,
     )
     assert sample_input_data["date"].iat[0] == datetime(2020, 12, 5)
 

@@ -18,6 +18,7 @@ class AppConfig(BaseModel):
     """
     Application-level config
     """
+
     package_name: str
     training_data_file: str
     pipeline_save_file: str
@@ -37,6 +38,7 @@ class ModelConfig(BaseModel):
     All configuration relevant to model
     trainig and feature engineering.
     """
+
     label: str
     seed: int
     folds: int
@@ -55,26 +57,28 @@ class ModelConfig(BaseModel):
     drop_cols: List[str]
     params_model: Dict[str, Any]
     score_threshold: float
- 
-    @field_validator('params_model')
+
+    @field_validator("params_model")
     @classmethod
     def validate_params_model(cls, v):
         expected_types = {
-            'objective': str,
-            'metric': str,
-            'boosting_type': str,
-            'n_estimators': int,
-            'verbosity': int,
-            'n_jobs': int
+            "objective": str,
+            "metric": str,
+            "boosting_type": str,
+            "n_estimators": int,
+            "verbosity": int,
+            "n_jobs": int,
         }
-        
+
         for key, expected_type in expected_types.items():
             if key in v:
                 try:
                     v[key] = expected_type(v[key])
                 except ValueError:
-                    raise ValueError(f"'{key}' debe ser de tipo {expected_type.__name__}")
-        
+                    raise ValueError(
+                        f"'{key}' debe ser de tipo {expected_type.__name__}"
+                    )
+
         return v
 
 
@@ -83,8 +87,8 @@ class Config(BaseModel):
 
     config_app: AppConfig
     config_model: ModelConfig
-    
-    
+
+
 def find_config_file() -> Path:
     """Locate the configuration file."""
     if CONFIG_FILE_PATH.is_file():
