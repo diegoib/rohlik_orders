@@ -1,5 +1,3 @@
-- crear tests
-- configurar tox en model-package
 - crear la api
 
 Hecho:
@@ -10,6 +8,8 @@ Hecho:
 - entrenar el pipeline
 - crear validaciones del performance del modelo
 - inference
+- crear tests
+- configurar tox en model-package
 
 
 situado en rohlik_orders/model-package, ejecutar "export PYTHONPATH=$(pwd):$PYTHONPATH" y 
