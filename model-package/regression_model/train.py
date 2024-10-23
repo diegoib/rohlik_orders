@@ -1,10 +1,10 @@
-import numpy as np
 from datetime import datetime, timedelta
 
+import numpy as np
 from config.core import config
 from pipeline import orders_pipe
-from processing.validation import validate_score
 from processing.data_manager import load_dataset, save_pipeline
+from processing.validation import validate_score
 
 
 def run_training() -> None:

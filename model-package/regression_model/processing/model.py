@@ -1,11 +1,11 @@
-from typing import Dict, Any, Tuple, List
+from typing import Any, Dict, List, Tuple
 
 import numpy as np
 import pandas as pd
 from lightgbm import LGBMRegressor, early_stopping
 from sklearn.base import BaseEstimator, RegressorMixin
-from sklearn.model_selection import GroupKFold
 from sklearn.metrics import mean_absolute_percentage_error
+from sklearn.model_selection import GroupKFold
 
 
 class VotingRegressor(BaseEstimator, RegressorMixin):

@@ -1,9 +1,8 @@
 from sklearn.pipeline import Pipeline
 
 from regression_model.config.core import config
-from regression_model.processing import model
 from regression_model.processing import features as pp
-
+from regression_model.processing import model
 
 orders_pipe = Pipeline(
     [

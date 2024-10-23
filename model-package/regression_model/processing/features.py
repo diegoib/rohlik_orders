@@ -1,9 +1,8 @@
-from typing import List, Dict
+from typing import Dict, List
 
 import numpy as np
 import pandas as pd
 from sklearn.base import BaseEstimator, TransformerMixin
-
 from sklearn.cluster import KMeans
 from sklearn.preprocessing import OneHotEncoder
 

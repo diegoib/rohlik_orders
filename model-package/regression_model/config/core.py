@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Dict, List, Any
+from typing import Any, Dict, List
 
 from pydantic import BaseModel, field_validator
 from strictyaml import YAML, load
