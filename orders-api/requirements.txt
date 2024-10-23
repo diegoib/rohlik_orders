@@ -1,0 +1,9 @@
+--extra-index-url=${PIP_EXTRA_INDEX_URL}
+
+uvicorn
+fastapi
+python-multipart
+pydantic
+pydantic-settings
+typing_extensions
+loguru

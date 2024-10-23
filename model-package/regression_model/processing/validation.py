@@ -59,6 +59,7 @@ class OrderInputSchema(BaseModel):
     snow: Optional[float]
     user_activity_1: Optional[float]
     user_activity_2: Optional[float]
+    id: Optional[str]
 
 
 class MultipleOrderInputs(BaseModel):
