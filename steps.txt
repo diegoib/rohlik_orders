@@ -1,4 +1,5 @@
-- crear la api
+- crear el ci-cd pipeline
+- crear la imagen de docker
 
 Hecho:
 - hacer una clase que implemente el cv y guarde los modelos en fit, y en predict los utilice
@@ -10,6 +11,8 @@ Hecho:
 - inference
 - crear tests
 - configurar tox en model-package
+- crear la api
+- tox y tests en la api
 
 
 situado en rohlik_orders/model-package, ejecutar "export PYTHONPATH=$(pwd):$PYTHONPATH" y 

@@ -35,7 +35,7 @@ async def predict(input_data: schemas.MultipleOrderInputs) -> Any:
 
     input_df = pd.DataFrame(jsonable_encoder(input_data.inputs))
     try:
-        input_data["date"] = pd.to_datetime(input_data["date"], errors="raise")
+        input_df["date"] = pd.to_datetime(input_df["date"], errors="raise")
     except ValueError as err:
         raise ValueError(err, "Unable to parse date")
 

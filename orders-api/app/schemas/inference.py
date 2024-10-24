@@ -20,7 +20,7 @@ class MultipleOrderInputs(BaseModel):
                 "inputs": [
                     {
                         "warehouse": "Prague_1",
-                        "date": '2020-12-05',
+                        "date": "2020-12-05",
                         "holiday_name": np.nan,
                         "holiday": 0,
                         "shutdown": 0,
@@ -35,7 +35,7 @@ class MultipleOrderInputs(BaseModel):
                         "snow": 0,
                         "user_activity_1": 1722,
                         "user_activity_2": 32575,
-                        "id": 'Prague_1_2020-12-05',
+                        "id": "Prague_1_2020-12-05",
                     }
                 ]
             }
