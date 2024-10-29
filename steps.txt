@@ -1,5 +1,12 @@
+- incorporar variable fecha cutoff en config y en el código
 - crear el ci-cd pipeline
 - crear la imagen de docker
+- despliegue de la app en gcp
+- programar entrenamiento periódico con airflow
+- programar predicciones diarias y guardarlas en bigquery
+- modificar y sacar el dataset de kaggle
+- montar monitoreo
+- mejorar el testing
 
 Hecho:
 - hacer una clase que implemente el cv y guarde los modelos en fit, y en predict los utilice
@@ -13,6 +20,10 @@ Hecho:
 - configurar tox en model-package
 - crear la api
 - tox y tests en la api
+- crear el build del paquete (manifest, setup.py, tox)
+- incorporar fetch_data
+- incorporar publish paquete a gemfury
+- arreglar pandas warning con .loc ...
 
 
 situado en rohlik_orders/model-package, ejecutar "export PYTHONPATH=$(pwd):$PYTHONPATH" y 
