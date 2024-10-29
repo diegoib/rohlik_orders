@@ -23,6 +23,7 @@ class ClusterGrouper(BaseEstimator, TransformerMixin):
         return self
 
     def transform(self, X) -> pd.DataFrame:
+        X = X.copy()
         X["cluster"] = self.kmeans.predict(X[self.variables])
         return X
 
@@ -51,6 +52,7 @@ class ConsecutiveDays(BaseEstimator, TransformerMixin):
         return self
 
     def transform(self, X: pd.DataFrame) -> pd.DataFrame:
+        X = X.copy()
 
         if X[self.variable].min() > self.last_date:
             X["cons_day"] = self.last_day + 1
@@ -87,6 +89,8 @@ class ConsecutiveWeeks(BaseEstimator, TransformerMixin):
         return self
 
     def transform(self, X: pd.DataFrame) -> pd.DataFrame:
+        X = X.copy()
+
         if (
             X[self.variable].dt.year * 100 + X[self.variable].dt.isocalendar().week
         ).min() > self.last_date:
@@ -118,6 +122,8 @@ class DateAttributes(BaseEstimator, TransformerMixin):
         return self
 
     def transform(self, X: pd.DataFrame) -> pd.DataFrame:
+        X = X.copy()
+
         for attr_name in self.date_attrs:
             X[attr_name] = getattr(X[self.variable].dt, attr_name)
 
@@ -136,6 +142,8 @@ class ShoppingIntensity(BaseEstimator, TransformerMixin):
         return self
 
     def transform(self, X: pd.DataFrame) -> pd.DataFrame:
+        X = X.copy()
+
         special_days = {
             "black_friday": (
                 (X["day"] >= 22)
@@ -200,6 +208,8 @@ class CyclicDateAttributes(BaseEstimator, TransformerMixin):
         return self
 
     def transform(self, X: pd.DataFrame) -> pd.DataFrame:
+        X = X.copy()
+
         for var, t in self.mapping.items():
             X[f"{var}_sin"] = np.sin(2 * np.pi * X[var] / t)
             X[f"{var}_cos"] = np.cos(2 * np.pi * X[var] / t)
@@ -230,6 +240,8 @@ class TransformOHE(BaseEstimator, TransformerMixin):
         return self
 
     def transform(self, X: pd.DataFrame) -> pd.DataFrame:
+        X = X.copy()
+
         ohe_encoded = pd.DataFrame(
             self.ohe.transform(X[[self.variable]]),
             columns=self.ohe.get_feature_names_out([self.variable]),
@@ -248,8 +260,11 @@ class ProximityHolidays(BaseEstimator, TransformerMixin):
         return self
 
     def transform(self, X: pd.DataFrame) -> pd.DataFrame:
+        X = X.copy()
+
         X[f"{self.variable}_before"] = X[self.variable].shift(1).fillna(0).astype(int)
         X[f"{self.variable}_after"] = X[self.variable].shift(-1).fillna(0).astype(int)
+
         return X
 
 
@@ -267,6 +282,8 @@ class City2Country(BaseEstimator, TransformerMixin):
         return self
 
     def transform(self, X: pd.DataFrame) -> pd.DataFrame:
+        X = X.copy()
+
         X["germany"] = np.where(
             X[self.variable].isin(["Munich_1", "Frankfurt_1"]), 1, 0
         )
@@ -290,6 +307,8 @@ class RowsFilter(BaseEstimator, TransformerMixin):
         return self
 
     def transform(self, X: pd.DataFrame) -> pd.DataFrame:
+        X = X.copy()
+
         for v in self.variables:
             X = X[X[v] == 0]
 
@@ -307,6 +326,8 @@ class ColsDropper(BaseEstimator, TransformerMixin):
         return self
 
     def transform(self, X: pd.DataFrame) -> pd.DataFrame:
+        X = X.copy()
+
         X = X.drop(self.variables, axis=1)
 
         return X

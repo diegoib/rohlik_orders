@@ -23,4 +23,4 @@ def test_date_attributes_transformer(sample_input_data):
     assert subject["dayofweek"].iat[0] == 5
     assert subject["dayofyear"].iat[0] == 340
     assert subject["quarter"].iat[0] == 4
-    assert subject["is_quarter_end"].iat[0] == False
+    assert subject["is_quarter_end"].iat[0] == False  # noqa: E712
