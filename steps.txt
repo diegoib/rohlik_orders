@@ -1,10 +1,9 @@
-- incorporar variable fecha cutoff en config y en el código
-- crear el ci-cd pipeline
 - crear la imagen de docker
 - despliegue de la app en gcp
+- incorporar variable fecha cutoff en config y en el código
+- crear el ci-cd pipeline
 - programar entrenamiento periódico con airflow
 - programar predicciones diarias y guardarlas en bigquery
-- modificar y sacar el dataset de kaggle
 - montar monitoreo
 - mejorar el testing
 
@@ -21,6 +20,7 @@ Hecho:
 - crear la api
 - tox y tests en la api
 - crear el build del paquete (manifest, setup.py, tox)
+- modificar y sacar el dataset de kaggle
 - incorporar fetch_data
 - incorporar publish paquete a gemfury
 - arreglar pandas warning con .loc ...
