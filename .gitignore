@@ -161,5 +161,6 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
 
-trained_models/
-data/
+model-package/regression_model/trained_models/*.pkl
+model-package/regression_model/data/*.zip
+model-package/regression_model/data/*.csv
