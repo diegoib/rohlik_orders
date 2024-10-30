@@ -3,6 +3,21 @@
 version: 2.1
 orbs:
   python: circleci/python@2
+
+prepare_venv: &prepare_venv
+  run:
+    name: Create venv
+    command: |
+      python -m venv venv
+      source venv/bin/activate
+      pip install --upgrade pip
+
+prepare_tox: &prepare_tox
+  run:
+    name: Install tox
+    command: |
+      pip install --user tox
+
 jobs:
   test-python:
     # Install dependencies and run tests
@@ -17,6 +32,8 @@ jobs:
       - python/install-packages:
           args: tox
           pkg-manager: pip-dist
+      - *prepare_venv
+      - *prepare_tox
       - run:
           name: Fetch data
           command: tox -e fetch_data
