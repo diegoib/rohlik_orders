@@ -1,0 +1,83 @@
+version: '2.1'
+orbs:
+  node: circleci/node@5.1.0
+
+defaults: &defaults
+  docker:
+    - image: cimg/python:3.11.1
+  working_directory: ~/project
+
+prepare_venv: &prepare_venv
+  run:
+    name: Create venv
+    command: |
+      python -m venv venv
+      source venv/bin/activate
+      pip install --upgrade pip
+
+prepare_tox: &prepare_tox
+  run:
+    name: Install tox
+    command: |
+      pip install --user tox
+
+fetch_data: &fetch_data
+  run:
+    name: Set script permissions and fetch data
+    command: |
+      source venv/bin/activate
+      chmod +x ./scripts/fetch_kaggle_dataset.sh
+      ./scripts/fetch_kaggle_dataset.sh
+
+jobs:
+  test_api:
+    <<: *defaults
+    working_directory: ~/project/orders-api
+    steps:
+      - checkout:
+          path: ~/project
+      - *prepare_tox
+      - run:
+          name: Runnning app tests
+          command: |
+            tox
+
+  test_and_upload_regression_model:
+    <<: *defaults
+    working_directory: ~/project/model-package
+    steps:
+      - checkout:
+          path: ~/project
+      - *prepare_tox
+      - run:
+          name: Fetch the data
+          command: |
+            tox -e fetch_data
+      - run:
+          name: Test the model
+          command: |
+            tox
+      - run:
+          name: Publish model to Gemfury
+          command: |
+            tox -e publish_model
+
+
+tags_only: &tags_only
+  filters:
+    branches:
+      ignore: /.*/
+    tags:
+      only: /^.*/
+
+workflows:
+  version: 2
+  deploy_pipeline:
+    jobs:
+      - test_and_upload_regression_model
+      - test_api:
+          requires:
+            - test_and_upload_regression_model
+      # upload after git tags are created
+      #- test_and_upload_regression_model:
+      #    <<: *tags_only
