@@ -29,6 +29,17 @@ fetch_data: &fetch_data
       chmod +x ./scripts/fetch_kaggle_dataset.sh
       ./scripts/fetch_kaggle_dataset.sh
 
+check_env_vars: &check_env_vars
+  run:
+    name: Check environment variables set in CircleCI
+    command: |
+      echo "Iniciando print envs"
+      echo $GEMFURY_URL
+      echo $KAGGLE_KEY
+      echo $KAGGLE_USERNAME
+      echo $PIP_EXTRA_INDEX_URL
+      echo "Terminando print envs"
+
 jobs:
   test_api:
     <<: *defaults
@@ -37,6 +48,7 @@ jobs:
       - checkout:
           path: ~/project
       - *prepare_tox
+      - *check_env_vars
       - run:
           name: Runnning app tests
           command: |
@@ -49,6 +61,7 @@ jobs:
       - checkout:
           path: ~/project
       - *prepare_tox
+      - *check_env_vars
       - run:
           name: Fetch the data
           command: |
