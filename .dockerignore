@@ -1,0 +1,10 @@
+jupyter_notebooks*
+*/env*
+*/venv*
+.circleci*
+model-package
+*.env
+*.log
+.git
+.gitignore
+.tox
