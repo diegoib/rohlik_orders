@@ -87,9 +87,10 @@ workflows:
   version: 2
   deploy_pipeline:
     jobs:
+      - test_and_upload_regression_model
       - test_api
+          requires:
+            - test_and_upload_regression_model
       # upload after git tags are created
       #- test_and_upload_regression_model:
       #    <<: *tags_only
-      - test_and_upload_regression_model
- 
