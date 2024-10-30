@@ -1,8 +1,11 @@
-# This config was automatically generated from your source code
-# Stacks detected: deps:python:orders-api,file:setup.py:model-package,test:tox:orders-api
-version: 2.1
+version: '2.1'
 orbs:
-  python: circleci/python@2
+  node: circleci/node@5.1.0
+
+defaults: &defaults
+  docker:
+    - image: cimg/python:3.11.1
+  working_directory: ~/project
 
 prepare_venv: &prepare_venv
   run:
@@ -18,63 +21,61 @@ prepare_tox: &prepare_tox
     command: |
       pip install --user tox
 
+fetch_data: &fetch_data
+  run:
+    name: Set script permissions and fetch data
+    command: |
+      source venv/bin/activate
+      chmod +x ./scripts/fetch_kaggle_dataset.sh
+      ./scripts/fetch_kaggle_dataset.sh
+
 jobs:
-  test-python:
-    # Install dependencies and run tests
-    docker:
-      - image: cimg/python:3.8-node
+  test_api:
+    <<: *defaults
+    working_directory: ~/project/orders-api
+    steps:
+      - checkout:
+          path: ~/project
+      - *prepare_tox
+      - run:
+          name: Runnning app tests
+          command: |
+            tox
+
+  test_and_upload_regression_model:
+    <<: *defaults
     working_directory: ~/project/model-package
     steps:
       - checkout:
           path: ~/project
-      - python/install-packages:
-          pkg-manager: pip-dist
-      - python/install-packages:
-          args: tox
-          pkg-manager: pip-dist
-      - *prepare_venv
       - *prepare_tox
       - run:
-          name: Fetch data
-          command: tox -e fetch_data
+          name: Fetch the data
+          command: |
+            tox -e fetch_data
       - run:
-          name: Train
-          command: tox -e train
+          name: Test the model
+          command: |
+            tox
       - run:
-          name: Run tests
-          command: tox
-      - store_test_results:
-          path: junit.xml
-  build-package:
-    # build python package
-    docker:
-      - image: cimg/python:3.8-node
-    steps:
-      - checkout:
-          path: ~/project
-      - run:
-          name: Create the ~/artifacts directory if it doesn't exist
-          command: mkdir -p ~/artifacts
-      - python/dist
-      - store_artifacts:
-          path: dist
-          destination: ~/artifacts
-  deploy:
-    # This is an example deploy job, not actually used by the workflow
-    docker:
-      - image: cimg/base:stable
-    steps:
-      # Replace this with steps to deploy to users
-      - run:
-          name: deploy
-          command: '#e.g. ./deploy.sh'
+          name: Publish model to Gemfury
+          command: |
+            tox -e publish_model
+
+
+tags_only: &tags_only
+  filters:
+    branches:
+      ignore: /.*/
+    tags:
+      only: /^.*/
+
 workflows:
-  build-and-test:
+  version: 2
+  deploy_pipeline:
     jobs:
-      - test-python
-      - build-package:
-          requires:
-            - test-python
-    # - deploy:
-    #     requires:
-    #       - build-package
+      - test_api
+      # upload after git tags are created
+      #- test_and_upload_regression_model:
+      #    <<: *tags_only
+      - test_and_upload_regression_model
