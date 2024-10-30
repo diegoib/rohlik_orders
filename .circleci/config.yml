@@ -8,7 +8,7 @@ jobs:
     # Install dependencies and run tests
     docker:
       - image: cimg/python:3.8-node
-    working_directory: ~/project/orders-api
+    working_directory: ~/project/model-package
     steps:
       - checkout:
           path: ~/project
@@ -17,6 +17,12 @@ jobs:
       - python/install-packages:
           args: tox
           pkg-manager: pip-dist
+      - run:
+          name: Fetch data
+          command: tox -e fetch_data
+      - run:
+          name: Train
+          command: tox -e train
       - run:
           name: Run tests
           command: tox
