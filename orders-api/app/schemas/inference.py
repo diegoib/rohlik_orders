@@ -21,7 +21,7 @@ class MultipleOrderInputs(BaseModel):
                     {
                         "warehouse": "Prague_1",
                         "date": "2020-12-05",
-                        "holiday_name": null,
+                        "holiday_name": "",
                         "holiday": 0,
                         "shutdown": 0,
                         "mini_shutdown": 0,
