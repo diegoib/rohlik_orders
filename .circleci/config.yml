@@ -124,7 +124,7 @@ workflows:
       - test_api:
           requires:
             - test_and_upload_regression_model
-      -deploy_api:
+      - deploy_api:
           requires:
             - test_api
       # upload after git tags are created
