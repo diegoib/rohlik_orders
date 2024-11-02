@@ -29,18 +29,18 @@ fetch_data: &fetch_data
       chmod +x ./scripts/fetch_kaggle_dataset.sh
       ./scripts/fetch_kaggle_dataset.sh
 
+prepare_gcloud: &prepare_gcloud
+  run:
+    name: Install gcloud cli
+    command: |
+      sudo apt-get update
+      sudo apt-get install apt-transport-https ca-certificates gnupg curl
+      curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo gpg --dearmor -o /usr/share/keyrings/cloud.google.gpg
+      echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
+      sudo apt-get update && sudo apt-get install google-cloud-cli
+      gcloud version
+
 jobs:
-  test_api:
-    <<: *defaults
-    working_directory: ~/project/orders-api
-    steps:
-      - checkout:
-          path: ~/project
-      - *prepare_tox
-      - run:
-          name: Runnning app tests
-          command: |
-            tox
 
   test_and_upload_regression_model:
     <<: *defaults
@@ -61,7 +61,53 @@ jobs:
           name: Publish model to Gemfury
           command: |
             tox -e publish_model
+  
+  test_api:
+    <<: *defaults
+    working_directory: ~/project/orders-api
+    steps:
+      - checkout:
+          path: ~/project
+      - *prepare_tox
+      - run:
+          name: Runnning app tests
+          command: |
+            tox
 
+  deploy_api:
+    <<: *defaults
+    working_directory: ~/project/orders-api
+    steps:
+      - checkout:
+          path: ~/project
+      - *prepare_gcloud
+      - run:
+          name: Authenticate with Google Cloud
+          command: |
+            echo $GOOGLE_AUTH > gcloud-service-key.json
+            gcloud auth active-service-account --key-file=gcloud-service-key.json
+            gcloud config set project $GOOGLE_PROJECT_ID
+      - run:
+          name: Configure Docker for Artifact Registry
+          command: |
+            gcloud auth configure-docker $GCP_REGION-docker.pkg.dev
+      - run:
+          name: Build Docker image
+          command: |
+            docker build --build-arg PIP_EXTRA_INDEX_URL=$PIP_EXTRA_INDEX_URL \ 
+              -t $GCP_REGION-docker.pkg.dev/$GOOGLE_PROJECT_ID/$ARTIFACT_REPO/$IMAGE_NAME:latest .
+      - run:
+          name: Push Docker image to Artifact Registry
+          command: |
+            docker push $GCP_REGION-docker.pkg.dev/$GOOGLE_PROJECT_ID/$ARTIFACT_REPO/$IMAGE_NAME:latest
+      - run:
+          name: Deploy to Google Cloud Run
+          command: |
+            gcloud run deploy $CLOUD_RUN_SERVICE \
+              --image $GCP_REGION-docker.pkg.dev/$GOOGLE_PROJECT_ID/$ARTIFACT_REPO/$IMAGE_NAME:latest \
+              --region $GCP_REGION \
+              --platform managed \
+              --allow-unauthenticated
 
 tags_only: &tags_only
   filters:
@@ -78,6 +124,9 @@ workflows:
       - test_api:
           requires:
             - test_and_upload_regression_model
+      -deploy_api:
+          requires:
+            - test_api
       # upload after git tags are created
       #- test_and_upload_regression_model:
       #    <<: *tags_only
