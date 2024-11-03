@@ -1,6 +1,6 @@
 --extra-index-url=${PIP_EXTRA_INDEX_URL}
 
-rohlik-orders-model==0.0.1
+rohlik-orders-model
 uvicorn>=0.32.0,<1.0.0
 fastapi>=0.115.3,<1.0.0
 python-multipart>=0.0.12,<1.0.0
