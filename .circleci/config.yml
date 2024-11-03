@@ -76,7 +76,7 @@ jobs:
 
   deploy_api:
     <<: *defaults
-    working_directory: ~/project/orders-api
+    working_directory: ~/project
     steps:
       - checkout:
           path: ~/project
