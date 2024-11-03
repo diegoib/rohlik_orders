@@ -81,6 +81,7 @@ jobs:
       - checkout:
           path: ~/project
       - *prepare_gcloud
+      - setup_remote_docker
       - run:
           name: Authenticate with Google Cloud
           command: |
