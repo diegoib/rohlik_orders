@@ -101,8 +101,7 @@ jobs:
             echo $IMAGE_NAME
             pwd
             ls
-            docker build --build-arg PIP_EXTRA_INDEX_URL=$PIP_EXTRA_INDEX_URL \ 
-              -t $GCP_REGION-docker.pkg.dev/$GOOGLE_PROJECT_ID/$ARTIFACT_REPO/$IMAGE_NAME:latest .
+            docker build --build-arg PIP_EXTRA_INDEX_URL=$PIP_EXTRA_INDEX_URL -t $GCP_REGION-docker.pkg.dev/$GOOGLE_PROJECT_ID/$ARTIFACT_REPO/$IMAGE_NAME:latest .
       - run:
           name: Push Docker image to Artifact Registry
           command: |
