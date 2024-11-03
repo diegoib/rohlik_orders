@@ -1,7 +1,5 @@
-- crear la imagen de docker
 - despliegue de la app en gcp
 - incorporar variable fecha cutoff en config y en el código
-- crear el ci-cd pipeline
 - programar entrenamiento periódico con airflow
 - programar predicciones diarias y guardarlas en bigquery
 - montar monitoreo
@@ -24,6 +22,8 @@ Hecho:
 - incorporar fetch_data
 - incorporar publish paquete a gemfury
 - arreglar pandas warning con .loc ...
+- crear la imagen de docker
+- crear el ci-cd pipeline
 
 
 situado en rohlik_orders/model-package, ejecutar "export PYTHONPATH=$(pwd):$PYTHONPATH" y 
