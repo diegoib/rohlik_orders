@@ -1,4 +1,4 @@
-- despliegue de la app en gcp
+- cambiar gemfury por google artifact registry
 - incorporar variable fecha cutoff en config y en el código
 - programar entrenamiento periódico con airflow
 - programar predicciones diarias y guardarlas en bigquery
