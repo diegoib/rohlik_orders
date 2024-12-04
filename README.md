@@ -1,6 +1,6 @@
 # ML Model Deployment with FastAPI and GCP Cloud Run
 
-Personal project that consists on a production-grade machine learning service that predicts order volumes using FastAPI, containerized with Docker, and deployed on Google Cloud Run.
+Personal project consisting of a production-level machine learning service that predicts the number of daily orders in an e-grocery company using FastAPI, containerized with Docker and deployed on Google Cloud Run. The data comes from a [Kaggle dataset](https://www.kaggle.com/c/rohlik-orders-forecasting-challenge/data).
 
 ## Project Structure
 
@@ -86,7 +86,7 @@ Required environment variables:
 
 The regression model uses a custom Voting Regressor based on LightGBM. Cross-validation is performed using GroupKFold to prevent data leakage.
 
-Feature engineering include features such as:
+Feature engineering includes features such as:
 - Temporal features (day of week, month, holidays)
 - Location clustering
 - Shopping intensity metrics
